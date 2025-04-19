@@ -1,0 +1,23 @@
+.header {
+    &.item {
+        margin-left: 3rem;
+
+        > span {
+            display: block;
+
+            &:nth-child(1) {
+                color: var(--gray-01);
+            }
+
+            &:nth-child(2) {
+                font-size: 0.7rem;
+                color: var(--gray-04);
+            }
+
+            &.green {
+                color: var(--green-01);
+            }
+        }
+
+    }
+}
