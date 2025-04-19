@@ -1,0 +1,9 @@
+:host {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--component-background);
+    border: 0.1rem solid var(--component-border);
+    border-radius: 0.2rem;
+    height: 100%;
+}

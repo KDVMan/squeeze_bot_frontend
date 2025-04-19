@@ -65,3 +65,36 @@ select {
         }
     }
 }
+
+.deposit {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    input[type="text"] {
+        padding-right: 2.5rem;
+    }
+
+    &:hover input[type="text"] {
+        border: 0.1rem solid #9f9f9f;
+    }
+
+    svg-icon {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        fill: var(--gray-04);
+        width: 1.5rem;
+        height: 1.5rem;
+        right: 0.5rem;
+
+        &[ng-reflect-name="toggle-on"] {
+            fill: var(--green-02);
+        }
+
+        &:hover {
+            fill: var(--green-03);
+            cursor: pointer;
+        }
+    }
+}

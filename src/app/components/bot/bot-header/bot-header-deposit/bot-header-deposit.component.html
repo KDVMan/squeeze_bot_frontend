@@ -1,0 +1,10 @@
+<div class="deposit">
+	<app-form-input-number [name]="'deposit'" [width]="7" [allowDecimal]="true" [maxDecimalLength]="2"/>
+
+	<svg-icon [name]="formGroup.get('isReal').value ? 'toggle-on' : 'toggle-off'"
+			  [ngbTooltip]="formGroup.get('isReal').value ? 'Отключить реальную торговлю (будет виртуальная)': 'Включить реальную торговлю'"
+			  [openDelay]="1000"
+			  container="body"
+			  placement="bottom"
+			  (click)="onToggle()"/>
+</div>

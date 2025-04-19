@@ -1,0 +1,42 @@
+<div class="row gx-2 gy-3" [formGroup]="formGroup">
+	<div class="col col-6">
+		<label>Направление</label>
+
+		<app-form-select [name]="'tradeDirection'"
+						 [widthMax]="true"
+						 [items]="directions"
+						 [item]="formGroup.get('tradeDirection').value ? { key: formGroup.get('tradeDirection').value, value: 'trade-direction.' + formGroup.get('tradeDirection').value } : { key: '', value: '' }"
+						 [addEmpty]="true"
+						 [allowChanged]="true"/>
+	</div>
+
+	<div class="col col-6">
+		<label>Привязка</label>
+
+		<app-form-select [name]="'bind'"
+						 [widthMax]="true"
+						 [items]="binds"
+						 [addEmpty]="true"
+						 [allowChanged]="true"/>
+	</div>
+
+	<div class="col col-6">
+		<label>Вход</label>
+		<app-form-input-number [name]="'percentIn'" [widthMax]="true" [allowDecimal]="true" [maxDecimalLength]="2"/>
+	</div>
+
+	<div class="col col-6">
+		<label>Выход</label>
+		<app-form-input-number [name]="'percentOut'" [widthMax]="true" [allowDecimal]="true" [maxDecimalLength]="2"/>
+	</div>
+
+	<div class="col col-6">
+		<label>Стоп время</label>
+		<app-form-input-number [name]="'stopTime'" [widthMax]="true"/>
+	</div>
+
+	<div class="col col-6">
+		<label>Стоп процент</label>
+		<app-form-input-number [name]="'stopPercent'" [widthMax]="true" [allowDecimal]="true" [maxDecimalLength]="2"/>
+	</div>
+</div>

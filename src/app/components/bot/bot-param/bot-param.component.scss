@@ -1,0 +1,13 @@
+:host {
+    > div {
+        padding: 0.5rem;
+
+        label {
+            display: block;
+            margin-bottom: 0.2rem;
+            color: var(--gray-06);
+        }
+    }
+}
+
+

@@ -55,6 +55,8 @@ export class AppComponent implements OnInit, OnDestroy {
 		this.iconService.loadSvg('assets/icons/favorite-fill.svg', 'favorite-fill');
 		this.iconService.loadSvg('assets/icons/settings.svg', 'settings');
 		this.iconService.loadSvg('assets/icons/close.svg', 'close');
+		this.iconService.loadSvg('assets/icons/toggle-on.svg', 'toggle-on');
+		this.iconService.loadSvg('assets/icons/toggle-off.svg', 'toggle-off');
 		// this.iconService.loadSvg('assets/icons/add.svg', 'add');
 		// this.iconService.loadSvg('assets/icons/add-right.svg', 'add-right');
 		// this.iconService.loadSvg('assets/icons/edit.svg', 'edit');
