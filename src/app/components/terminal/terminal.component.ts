@@ -4,6 +4,7 @@ import { FooterComponent } from '@app/components/footer/footer.component';
 import { SymbolListComponent } from '@app/components/symbol-list/symbol-list.component';
 import { ChartComponent } from '@app/components/chart/chart.component';
 import { BotComponent } from '@app/components/bot/bot.component';
+import { BotListComponent } from '@app/components/bot-list/bot-list.component';
 
 @Component({
 	selector: 'app-terminal',
@@ -15,6 +16,7 @@ import { BotComponent } from '@app/components/bot/bot.component';
 		SymbolListComponent,
 		ChartComponent,
 		BotComponent,
+		BotListComponent,
 	]
 })
 export class TerminalComponent {

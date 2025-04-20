@@ -3,5 +3,6 @@ export enum WebsocketEventEnum {
 	symbolList = 'symbolList',
 	currentPrice = 'currentPrice',
 	user = 'user',
-	leverage = 'leverage'
+	leverage = 'leverage',
+	bot = 'bot'
 }

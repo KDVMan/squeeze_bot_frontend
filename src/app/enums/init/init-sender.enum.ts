@@ -1,5 +1,6 @@
 export enum InitSenderEnum {
 	symbol = 'symbol',
 	interval = 'interval',
-	intervalFavorite = 'intervalFavorite'
+	intervalFavorite = 'intervalFavorite',
+	bot = 'bot'
 }

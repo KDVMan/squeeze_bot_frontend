@@ -1,8 +1,9 @@
 .icon {
     &.sort {
+        padding-top: 0.23rem;
         width: 0.4rem;
     }
-    
+
     &:not(.sort) {
         fill: #8d8d8d;
         width: 1rem;
