@@ -10,6 +10,7 @@ export class InitModel {
 	precision: number;
 	leverageLevel: number;
 	leverageType: SymbolLeverageTypeEnum;
+	botID: number;
 	botSortColumn: BotSortEnum;
 	botSortDirection: SortDirectionEnum;
 

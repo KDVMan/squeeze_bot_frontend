@@ -38,7 +38,7 @@ export class BotListComponent implements OnInit, OnDestroy {
 	public sortColumn: BotSortEnum = BotSortEnum.symbol;
 	public sortDirection: SortDirectionEnum = SortDirectionEnum.desc;
 	public results: BotModel[] = [];
-	public selectedIndex: number | null = null;
+	public selectedBotID: number | null = null;
 	public toggle$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	public readonly botStatusEnum = BotStatusEnum;
 
@@ -62,10 +62,17 @@ export class BotListComponent implements OnInit, OnDestroy {
 		this.page$ = this.paginationService.pageSubject;
 		this.sortColumn = this.initService.model.botSortColumn;
 		this.sortDirection = this.initService.model.botSortDirection;
+		this.selectedBotID = this.initService.model.botID ?? null;
 
 		this.subscriptionInit = this.initService.setSubject.subscribe((response: InitSubjectModel) => {
 			if (response.senders.some(x => x === InitSenderEnum.symbol)) {
 				this.loaded = false;
+
+				if (response.senders.includes(InitSenderEnum.bot)) {
+					this.selectedBotID = response.model.botID ?? null;
+				} else {
+					this.selectedBotID = null;
+				}
 			}
 		});
 
@@ -117,13 +124,13 @@ export class BotListComponent implements OnInit, OnDestroy {
 		this.toggle$.next(!this.toggle$.value);
 	}
 
-	public onClick(bot: BotModel, index: number): void {
+	public onClick(bot: BotModel): void {
 		this.initService.update({
 			symbol: bot.symbol,
-			interval: this.initService.model.intervals.find(i => i.name === bot.interval)
-		}, [InitSenderEnum.symbol, InitSenderEnum.interval]);
+			interval: this.initService.model.intervals.find(i => i.name === bot.interval),
+			botID: bot.id
+		}, [InitSenderEnum.symbol, InitSenderEnum.interval, InitSenderEnum.bot]);
 
-
-		this.selectedIndex = index;
+		this.selectedBotID = bot.id;
 	}
 }

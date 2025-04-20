@@ -29,7 +29,7 @@
 		</th>
 	</tr>
 
-	<tr *ngFor="let result of results; let i = index" (click)="onClick(result, i)" [class.selected]="i === selectedIndex">
+	<tr *ngFor="let result of results" (click)="onClick(result)" [class.selected]="result.id === selectedBotID">
 		<td>{{ result.id }}</td>
 
 		<td>

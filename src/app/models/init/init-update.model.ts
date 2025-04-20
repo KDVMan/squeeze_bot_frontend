@@ -5,6 +5,7 @@ import { SortDirectionEnum } from '@core/enums/sort-direction.enum';
 export interface InitUpdateModel {
 	symbol?: string;
 	interval?: QuoteIntervalModel;
+	botID?: number;
 	botSortColumn?: BotSortEnum;
 	botSortDirection?: SortDirectionEnum;
 }

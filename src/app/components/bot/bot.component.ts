@@ -1,9 +1,14 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { greaterThanZeroValidator } from '@core/validators/greated-than-zero.validator';
 import { BotHeaderComponent } from '@app/components/bot/bot-header/bot-header.component';
 import { BotParamComponent } from '@app/components/bot/bot-param/bot-param.component';
+import { InitService } from '@app/services/init/init.service';
+import { Subscription } from 'rxjs';
+import { BotModel } from '@app/models/bot/bot.model';
+import { WebsocketEventEnum } from '@core/enums/websocket-event.enum';
+import { WebsocketService } from '@core/services/websocket.service';
 
 @Component({
 	selector: 'app-bot',
@@ -15,12 +20,35 @@ import { BotParamComponent } from '@app/components/bot/bot-param/bot-param.compo
 		BotParamComponent
 	]
 })
-export class BotComponent implements OnInit {
+export class BotComponent implements OnInit, OnDestroy {
 	private readonly formBuilder = inject(FormBuilder);
+	private readonly websocketService = inject(WebsocketService);
+	private readonly initService = inject(InitService);
+	private subscriptionBot: Subscription;
 	public formGroup: FormGroup;
 
 	public ngOnInit(): void {
 		this.createForm();
+
+		this.subscriptionBot = this.websocketService.receive<BotModel[]>(WebsocketEventEnum.bot).subscribe(results => {
+			const bot = results.find(x => x.id === this.initService.model.botID);
+
+			if (bot) {
+				this.formGroup.patchValue({
+					isReal: bot.isReal,
+					tradeDirection: bot.tradeDirection,
+					bind: bot.currentParam.bind,
+					percentIn: bot.currentParam.percentIn,
+					percentOut: bot.currentParam.percentOut,
+					stopTime: bot.currentParam.stopTime,
+					stopPercent: bot.currentParam.stopPercent
+				});
+			}
+		});
+	}
+
+	public ngOnDestroy(): void {
+		if (this.subscriptionBot) this.subscriptionBot.unsubscribe();
 	}
 
 	private createForm(): void {
