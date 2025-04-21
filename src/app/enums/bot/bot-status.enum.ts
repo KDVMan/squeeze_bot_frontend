@@ -1,6 +1,7 @@
 export enum BotStatusEnum {
 	new = 'new',
-	start = 'start',
+	add = 'add',
+	run = 'run',
 	stop = 'stop',
 	archive = 'archive',
 	wait = 'wait'

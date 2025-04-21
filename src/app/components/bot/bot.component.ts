@@ -30,7 +30,7 @@ export class BotComponent implements OnInit, OnDestroy {
 	public ngOnInit(): void {
 		this.createForm();
 
-		this.subscriptionBot = this.websocketService.receive<BotModel[]>(WebsocketEventEnum.bot).subscribe(results => {
+		this.subscriptionBot = this.websocketService.receive<BotModel[]>(WebsocketEventEnum.botList).subscribe(results => {
 			const bot = results.find(x => x.id === this.initService.model.botID);
 
 			if (bot) {

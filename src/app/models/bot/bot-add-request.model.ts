@@ -1,7 +1,7 @@
 import { TradeDirectionEnum } from '@core/enums/trade-direction.enum';
 import { BindEnum } from '@core/enums/bind.enum';
 
-export class BotStartRequestModel {
+export class BotAddRequestModel {
 	deposit: number;
 	isReal: boolean;
 	symbol: string;
@@ -12,4 +12,5 @@ export class BotStartRequestModel {
 	percentOut: number;
 	stopTime: number;
 	stopPercent: number;
+	limitQuotes: number;
 }

@@ -31,6 +31,7 @@ export class BotListComponent implements OnInit, OnDestroy {
 	private readonly websocketService = inject(WebsocketService);
 	private readonly botService = inject(BotService);
 	private subscriptionInit: Subscription;
+	private subscriptionBotList: Subscription;
 	private subscriptionBot: Subscription;
 	protected total$: Observable<number>;
 	protected page$: Observable<number>;
@@ -76,14 +77,24 @@ export class BotListComponent implements OnInit, OnDestroy {
 			}
 		});
 
-		this.subscriptionBot = this.websocketService.receive<BotModel[]>(WebsocketEventEnum.bot).subscribe(results => {
+		this.subscriptionBotList = this.websocketService.receive<BotModel[]>(WebsocketEventEnum.botList).subscribe(results => {
 			this.results = results;
 			this.loaded = true;
+		});
+
+		this.subscriptionBot = this.websocketService.receive<BotModel>(WebsocketEventEnum.bot).subscribe(result => {
+			console.log('result', result);
+			const index = this.results.findIndex(x => x.id === result.id);
+
+			if (index !== -1) {
+				this.results[index] = result;
+			}
 		});
 	}
 
 	public ngOnDestroy(): void {
 		if (this.subscriptionInit) this.subscriptionInit.unsubscribe();
+		if (this.subscriptionBotList) this.subscriptionBotList.unsubscribe();
 		if (this.subscriptionBot) this.subscriptionBot.unsubscribe();
 	}
 

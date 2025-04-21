@@ -3,8 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { InitService } from '@app/services/init/init.service';
 import { first } from 'rxjs';
 import { BotService } from '@app/services/bot/bot.service';
-import { BotStartRequestModel } from '@app/models/bot/bot-start-request.model';
 import { InitModel } from '@app/models/init/init.model';
+import { BotAddRequestModel } from '@app/models/bot/bot-add-request.model';
 
 @Component({
 	selector: 'app-bot-header-start',
@@ -18,7 +18,7 @@ export class BotHeaderStartComponent {
 	private readonly botService = inject(BotService);
 
 	public onClick(): void {
-		const request: BotStartRequestModel = {
+		const request: BotAddRequestModel = {
 			deposit: Number(this.formGroup.get('deposit').value),
 			isReal: this.formGroup.get('isReal').value,
 			symbol: this.initService.model.symbol,
@@ -28,10 +28,11 @@ export class BotHeaderStartComponent {
 			percentIn: Number(this.formGroup.get('percentIn').value),
 			percentOut: Number(this.formGroup.get('percentOut').value),
 			stopTime: Number(this.formGroup.get('stopTime').value),
-			stopPercent: Number(this.formGroup.get('stopPercent').value)
+			stopPercent: Number(this.formGroup.get('stopPercent').value),
+			limitQuotes: 1
 		};
 
-		this.botService.start(request)
+		this.botService.add(request)
 			.pipe(first())
 			.subscribe();
 	}

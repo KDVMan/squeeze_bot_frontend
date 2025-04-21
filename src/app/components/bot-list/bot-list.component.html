@@ -76,9 +76,11 @@
 		<td>{{ ('M006.' + result.status) | translate | lowercase }}</td>
 
 		<td class="actions">
-			<svg-icon [name]="'start'" *ngIf="result.status === botStatusEnum.stop || result.status === botStatusEnum.archive" (click)="onStatus(result.id, $event, botStatusEnum.start)"/>
-			<svg-icon [name]="'stop'" *ngIf="result.status === botStatusEnum.start" (click)="onStatus(result.id, $event, botStatusEnum.stop)"/>
-			<svg-icon [name]="'delete'" *ngIf="result.status !== botStatusEnum.start && result.status !== botStatusEnum.archive" (click)="onStatus(result.id, $event, botStatusEnum.archive)"/>
+			<svg-icon [name]="'start'" *ngIf="result.status === botStatusEnum.stop || result.status === botStatusEnum.archive" (click)="onStatus(result.id, $event, botStatusEnum.add)"/>
+			<svg-icon [name]="'stop'" *ngIf="result.status === botStatusEnum.add || result.status === botStatusEnum.run" (click)="onStatus(result.id, $event, botStatusEnum.stop)"/>
+
+			<svg-icon [name]="'delete'" *ngIf="result.status !== botStatusEnum.add && result.status !== botStatusEnum.run && result.status !== botStatusEnum.archive"
+					  (click)="onStatus(result.id, $event, botStatusEnum.archive)"/>
 		</td>
 	</tr>
 </table>
