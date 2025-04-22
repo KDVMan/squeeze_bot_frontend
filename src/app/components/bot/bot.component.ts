@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 import { BotModel } from '@app/models/bot/bot.model';
 import { WebsocketEventEnum } from '@core/enums/websocket-event.enum';
 import { WebsocketService } from '@core/services/websocket.service';
+import { leastOneFieldValidator } from '@core/validators/least-one-field.validator';
 
 @Component({
 	selector: 'app-bot',
@@ -61,6 +62,6 @@ export class BotComponent implements OnInit, OnDestroy {
 			percentOut: ['', [Validators.required, greaterThanZeroValidator(false)]],
 			stopTime: ['', [Validators.required, greaterThanZeroValidator(true)]],
 			stopPercent: ['', [Validators.required, greaterThanZeroValidator(true)]]
-		});
+		}, {validators: leastOneFieldValidator(['stopTime', 'stopPercent'])});
 	}
 }

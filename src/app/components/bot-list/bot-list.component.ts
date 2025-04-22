@@ -83,7 +83,6 @@ export class BotListComponent implements OnInit, OnDestroy {
 		});
 
 		this.subscriptionBot = this.websocketService.receive<BotModel>(WebsocketEventEnum.bot).subscribe(result => {
-			console.log('result', result);
 			const index = this.results.findIndex(x => x.id === result.id);
 
 			if (index !== -1) {
