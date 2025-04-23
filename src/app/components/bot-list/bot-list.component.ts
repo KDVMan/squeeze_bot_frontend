@@ -18,6 +18,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { BotStatusEnum } from '@app/enums/bot/bot-status.enum';
 import { BotStatusRequestModel } from '@app/models/bot/bot-status-request.model';
 import { BotService } from '@app/services/bot/bot.service';
+import { BotDealStatusEnum } from '@app/enums/bot/bot-deal-status.enum';
 
 @Component({
 	selector: 'app-bot-list',
@@ -42,6 +43,7 @@ export class BotListComponent implements OnInit, OnDestroy {
 	public selectedBotID: number | null = null;
 	public toggle$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	public readonly botStatusEnum = BotStatusEnum;
+	public readonly botDealStatusEnum = BotDealStatusEnum;
 
 	public sortFields = [
 		{name: '#', value: BotSortEnum.id, sortable: true},

@@ -49,13 +49,23 @@
 
 		<td class="param">
 			<span class="prev" *ngIf="result.prevParam.percentIn">{{ result.prevParam.percentIn }}</span>
-			<span class="current">{{ result.currentParam.percentIn }}</span>
+
+			<span class="current">
+				{{ result.currentParam.percentIn }}
+				<i *ngIf="result.deal.priceIn">{{ result.deal.priceIn }}</i>
+			</span>
+
 			<span class="next" *ngIf="result.nextParam.percentIn">{{ result.nextParam.percentIn }}</span>
 		</td>
 
 		<td class="param">
 			<span class="prev" *ngIf="result.prevParam.percentOut">{{ result.prevParam.percentOut }}</span>
-			<span class="current">{{ result.currentParam.percentOut }}</span>
+
+			<span class="current">
+				{{ result.currentParam.percentOut }}
+				<i *ngIf="result.deal.calculatePriceOut">{{ result.deal.calculatePriceOut }}</i>
+			</span>
+
 			<span class="next" *ngIf="result.nextParam.percentOut">{{ result.nextParam.percentOut }}</span>
 		</td>
 
@@ -73,7 +83,15 @@
 
 		<td> {{ result.deposit }}</td>
 
-		<td>{{ ('M006.' + result.status) | translate | lowercase }}</td>
+		<td [ngSwitch]="result.status === botStatusEnum.run && result.deal.status === botDealStatusEnum.open">
+			<span *ngSwitchCase="true">
+				{{ ('M006.deal') | translate | lowercase }}
+			</span>
+
+			<span *ngSwitchDefault>
+				{{ ('M006.' + result.status) | translate | lowercase }}
+			</span>
+		</td>
 
 		<td class="actions">
 			<svg-icon [name]="'start'" *ngIf="result.status === botStatusEnum.stop || result.status === botStatusEnum.archive" (click)="onStatus(result.id, $event, botStatusEnum.add)"/>

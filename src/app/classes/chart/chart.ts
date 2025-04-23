@@ -16,6 +16,8 @@ import { LoadQuoteService } from '@app/classes/chart/services/load-quote.service
 import { Subject } from 'rxjs';
 import { ChartSettingsModel } from '@app/models/chart-settings/chart-settings.model';
 import { InitModel } from '@app/models/init/init.model';
+import { DrawDealService } from '@app/classes/chart/services/draw-deal.service';
+import { DealModel } from '@app/models/deal/deal.model';
 
 export class Chart {
 	public context: CanvasRenderingContext2D;
@@ -34,6 +36,7 @@ export class Chart {
 	public aimService: AimService;
 	public rulerService: RulerService;
 	public informationService: InformationService;
+	public drawDealService: DrawDealService;
 	public candleWidth: number = 0;
 	public candleWidthHalf: number = 0;
 	public visibleCandles: number = 0;
@@ -41,6 +44,7 @@ export class Chart {
 	public timeTo: number = 0;
 	public loadSubject = new Subject<number>();
 	public currentIntervalMilliseconds: number = 0;
+	public deals: DealModel[] = [];
 
 	constructor(public canvas: HTMLCanvasElement) {
 		const container = this.canvas.parentElement;
@@ -86,20 +90,6 @@ export class Chart {
 		this.timeTo = chartInit.timeTo;
 		this.currentIntervalMilliseconds = InitModel.getActiveInterval(this.initModel.intervals).seconds * 1000;
 
-		// 	// this.bot = Bot.loadDefault();
-		// 	// this.bot.name = data.botTemplate.bot;
-		// 	// if (data.botTemplate.bot) this.bot.nameSettings = 'bot' + HelperService.firstUpper(data.botTemplate.bot);
-		// 	// this.bot.timeFrom = data.botTemplate.timeFrom;
-		// 	// this.bot.timeTo = data.botTemplate.timeTo;
-		// 	// this.bot.type = data.botTemplate.type;
-
-		// 	// if (data.botTemplate.bot === BotEnum.horizonBreak) {
-		// 	// 	this.bot.entries = data.botTemplate.botHorizonBreakResult.entry;
-		// 	// 	this.bot.position = data.botTemplate.botHorizonBreakResult.position[data.botTemplate.botHorizonBreakResult.position.length - 1];
-		// 	// 	this.bot.positions = data.botTemplate.botHorizonBreakResult.position;
-		// 	// 	// this.bot.positionPhantom = data.botTemplate.botHorizonBreakResult.positionPhantom;
-		// 	// }
-
 		this.textService = new TextService(this);
 		if (this.rangeService === undefined) this.rangeService = new RangeService(this);
 		this.mouseService = new MouseService(this);
@@ -112,6 +102,7 @@ export class Chart {
 		this.aimService = new AimService(this);
 		this.rulerService = new RulerService(this);
 		this.informationService = new InformationService(this);
+		this.drawDealService = new DrawDealService(this);
 
 		this.calculate(chartInit.xRescale, chartInit.yRescale);
 	}
@@ -141,18 +132,18 @@ export class Chart {
 
 		this.gridService.draw();
 		this.candleService.draw();
+		this.drawDealService.draw();
 		this.legendService.draw();
-		// // if (this.bot.type === BotTypeEnum.run) this.drawPhantom.draw();
 		this.currentPriceService.draw();
 		this.aimService.draw();
 		if (this.rulerService.allow) this.rulerService.draw();
 		this.informationService.draw();
 	}
 
-	// public updateDeals(deals: CalculateDealModel[] = []): void {
-	//     this.deals = deals;
-	//     this.update();
-	// }
+	public updateDeals(deals: DealModel[] = []): void {
+		this.deals = deals;
+		this.update();
+	}
 
 	public mouseEvent(eventName: string, event: MouseEvent): void {
 		if (this.mouseService) {

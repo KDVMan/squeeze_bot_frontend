@@ -17,6 +17,7 @@ import { ChartSettingsModel } from '@app/models/chart-settings/chart-settings.mo
 import { QuoteModel } from '@app/models/quote/quote.model';
 import { WebsocketEventEnum } from '@core/enums/websocket-event.enum';
 import { ChartPanelComponent } from '@app/components/chart/chart-panel/chart-panel.component';
+import { BotModel } from '@app/models/bot/bot.model';
 
 @Component({
 	selector: 'app-chart',
@@ -27,14 +28,13 @@ import { ChartPanelComponent } from '@app/components/chart/chart-panel/chart-pan
 export class ChartComponent implements OnInit, OnDestroy {
 	private subscriptionInit: Subscription;
 	private subscriptionChartSettings: Subscription;
-	private subscriptionCalculate: Subscription;
 	private subscriptionChart: Subscription;
 	private subscriptionCurrentPrice: Subscription;
+	private subscriptionBot: Subscription;
 	private renderer = inject(Renderer2);
 	private initService = inject(InitService);
 	private chartSettingsService = inject(ChartSettingsService);
 	private quoteService = inject(QuoteService);
-	// private calculateService = inject(CalculateService);
 	private websocketService = inject(WebsocketService);
 	private chart: Chart;
 	public loaded: boolean = false;
@@ -63,14 +63,18 @@ export class ChartComponent implements OnInit, OnDestroy {
 		this.subscriptionCurrentPrice = this.websocketService.receive<QuoteModel>(WebsocketEventEnum.currentPrice).subscribe((response: QuoteModel) => {
 			if (this.chart && this.chart.loadQuoteService) this.chart.loadQuoteService.updateCurrent(response);
 		});
+
+		this.subscriptionBot = this.websocketService.receive<BotModel>(WebsocketEventEnum.bot).subscribe(response => {
+			console.log('CHART', response);
+		});
 	}
 
 	public ngOnDestroy(): void {
 		if (this.subscriptionInit) this.subscriptionInit.unsubscribe();
 		if (this.subscriptionChartSettings) this.subscriptionChartSettings.unsubscribe();
-		if (this.subscriptionCalculate) this.subscriptionCalculate.unsubscribe();
 		if (this.subscriptionChart) this.subscriptionChart.unsubscribe();
 		if (this.subscriptionCurrentPrice) this.subscriptionCurrentPrice.unsubscribe();
+		if (this.subscriptionBot) this.subscriptionBot.unsubscribe();
 	}
 
 	private loadQuotes(timeEnd: number, type: QuoteTypeEnum, index: number = 0, yRescale: boolean = true): void {
@@ -104,8 +108,8 @@ export class ChartComponent implements OnInit, OnDestroy {
 					});
 				}
 
-				// if (response.deals?.length) this.chart.updateDeals(response.deals);
-				// if (type == QuoteTypeEnum.init) this.chart.updateDeals();
+				if (response.deals?.length) this.chart.updateDeals(response.deals);
+				if (type == QuoteTypeEnum.init) this.chart.updateDeals();
 
 				this.loaded = true;
 			});
