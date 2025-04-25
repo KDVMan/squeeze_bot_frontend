@@ -1,5 +1,5 @@
 export class UserModel {
-	totalBalance: number;
+	balance: number;
 	availableBalance: number;
 	hedge: boolean;
 }

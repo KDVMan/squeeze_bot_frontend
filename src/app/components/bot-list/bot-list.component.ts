@@ -16,9 +16,9 @@ import { SvgIconComponent } from 'angular-svg-icon';
 import { InitSubjectModel } from '@app/models/init/init-subject.model';
 import { TranslatePipe } from '@ngx-translate/core';
 import { BotStatusEnum } from '@app/enums/bot/bot-status.enum';
-import { BotStatusRequestModel } from '@app/models/bot/bot-status-request.model';
 import { BotService } from '@app/services/bot/bot.service';
 import { BotDealStatusEnum } from '@app/enums/bot/bot-deal-status.enum';
+import { BotUpdateStatusRequestModel } from '@app/models/bot/bot-update-status-request.model';
 
 @Component({
 	selector: 'app-bot-list',
@@ -122,12 +122,12 @@ export class BotListComponent implements OnInit, OnDestroy {
 	public onStatus(id: number, event: Event, status: BotStatusEnum) {
 		event.stopPropagation();
 
-		const request: BotStatusRequestModel = {
+		const request: BotUpdateStatusRequestModel = {
 			id: id,
 			status: status
 		};
 
-		this.botService.status(request)
+		this.botService.updateStatus(request)
 			.pipe(first())
 			.subscribe();
 	}

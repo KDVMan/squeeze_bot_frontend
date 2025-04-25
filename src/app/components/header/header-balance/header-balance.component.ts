@@ -15,12 +15,12 @@ import { UserModel } from '@app/models/user/user.model';
 export class HeaderBalanceComponent implements OnInit, OnDestroy {
 	private subscription: Subscription;
 	private websocketService = inject(WebsocketService);
-	public totalBalance = 0;
+	public balance = 0;
 	public availableBalance = 0;
 
 	public ngOnInit(): void {
 		this.subscription = this.websocketService.receive<UserModel>(WebsocketEventEnum.user).subscribe(result => {
-			this.totalBalance = result.totalBalance;
+			this.balance = result.balance;
 			this.availableBalance = result.availableBalance;
 		});
 	}

@@ -1,6 +1,6 @@
 import { BotStatusEnum } from '@app/enums/bot/bot-status.enum';
 
-export class BotStatusRequestModel {
+export class BotUpdateStatusRequestModel {
 	id: number;
 	status: BotStatusEnum;
 }
