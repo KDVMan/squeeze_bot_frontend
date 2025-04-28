@@ -18,6 +18,7 @@ import { QuoteModel } from '@app/models/quote/quote.model';
 import { WebsocketEventEnum } from '@core/enums/websocket-event.enum';
 import { ChartPanelComponent } from '@app/components/chart/chart-panel/chart-panel.component';
 import { BotModel } from '@app/models/bot/bot.model';
+import { DealModel } from '@app/models/deal/deal.model';
 
 @Component({
 	selector: 'app-chart',
@@ -31,6 +32,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 	private subscriptionChart: Subscription;
 	private subscriptionCurrentPrice: Subscription;
 	private subscriptionBot: Subscription;
+	private subscriptionDeal: Subscription;
 	private renderer = inject(Renderer2);
 	private initService = inject(InitService);
 	private chartSettingsService = inject(ChartSettingsService);
@@ -48,7 +50,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 		this.subscriptionInit = this.initService.updateSubject.subscribe((response: InitSubjectModel) => {
 			if (response.senders.some(x => x === InitSenderEnum.symbol || x === InitSenderEnum.interval)) {
 				this.loaded = false;
-				this.loadQuotes(0, QuoteTypeEnum.init, 0, response.params?.['yRescale'] ?? true);
+				this.loadQuotes(0, QuoteTypeEnum.init, response.params?.['yRescale'] ?? true);
 			}
 		});
 
@@ -65,7 +67,13 @@ export class ChartComponent implements OnInit, OnDestroy {
 		});
 
 		this.subscriptionBot = this.websocketService.receive<BotModel>(WebsocketEventEnum.bot).subscribe(response => {
-			console.log('CHART', response);
+			if (this.chart && response.id === this.initService.model.botID) {
+				this.chart.updateBot(response);
+			}
+		});
+
+		this.subscriptionDeal = this.websocketService.receive<DealModel>(WebsocketEventEnum.deal).subscribe(response => {
+			this.chart.updateDeal(response);
 		});
 	}
 
@@ -75,15 +83,16 @@ export class ChartComponent implements OnInit, OnDestroy {
 		if (this.subscriptionChart) this.subscriptionChart.unsubscribe();
 		if (this.subscriptionCurrentPrice) this.subscriptionCurrentPrice.unsubscribe();
 		if (this.subscriptionBot) this.subscriptionBot.unsubscribe();
+		if (this.subscriptionDeal) this.subscriptionDeal.unsubscribe();
 	}
 
-	private loadQuotes(timeEnd: number, type: QuoteTypeEnum, index: number = 0, yRescale: boolean = true): void {
+	private loadQuotes(timeEnd: number, type: QuoteTypeEnum, yRescale: boolean = true): void {
 		const request: QuoteRequestModel = {
+			botID: type === QuoteTypeEnum.init ? this.initService.model.botID : 0,
 			symbol: this.initService.model.symbol,
 			interval: InitModel.getActiveInterval(this.initService.model.intervals).name,
 			quotesLimit: this.initService.model.quotesLimit,
 			timeEnd: timeEnd,
-			index: index,
 			type: type
 		};
 
@@ -103,13 +112,12 @@ export class ChartComponent implements OnInit, OnDestroy {
 						timeTo: response.timeTo,
 						xRescale: true,
 						yRescale: yRescale,
-						// strategyResult: response.strategySymbolModel?.strategyResult ?? null,
-						// activators: response.strategySymbolModel?.strategy?.activators?.filter(activator => activator.show).map(activator => activator.id) || []
 					});
 				}
 
-				if (response.deals?.length) this.chart.updateDeals(response.deals);
-				if (type == QuoteTypeEnum.init) this.chart.updateDeals();
+				if (type == QuoteTypeEnum.init) {
+					this.chart.updateDeals(response.bot, response.deals);
+				}
 
 				this.loaded = true;
 			});

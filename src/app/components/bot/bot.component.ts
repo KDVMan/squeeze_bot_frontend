@@ -10,6 +10,7 @@ import { BotModel } from '@app/models/bot/bot.model';
 import { WebsocketEventEnum } from '@core/enums/websocket-event.enum';
 import { WebsocketService } from '@core/services/websocket.service';
 import { leastOneFieldValidator } from '@core/validators/least-one-field.validator';
+import { lessThanOrZeroValidator } from '@core/validators/less-than-or-zero.validator';
 
 @Component({
 	selector: 'app-bot',
@@ -42,7 +43,8 @@ export class BotComponent implements OnInit, OnDestroy {
 					percentIn: bot.currentParam.percentIn,
 					percentOut: bot.currentParam.percentOut,
 					stopTime: bot.currentParam.stopTime,
-					stopPercent: bot.currentParam.stopPercent
+					stopPercent: bot.currentParam.stopPercent,
+					triggerStart: bot.currentParam.triggerStart
 				});
 			}
 		});
@@ -60,8 +62,9 @@ export class BotComponent implements OnInit, OnDestroy {
 			bind: ['', Validators.required],
 			percentIn: ['', [Validators.required, greaterThanZeroValidator(false)]],
 			percentOut: ['', [Validators.required, greaterThanZeroValidator(false)]],
-			stopTime: ['', [Validators.required, greaterThanZeroValidator(true)]],
-			stopPercent: ['', [Validators.required, greaterThanZeroValidator(true)]]
+			stopTime: [0, [Validators.required, greaterThanZeroValidator(true)]],
+			stopPercent: [0, [Validators.required, greaterThanZeroValidator(true)]],
+			triggerStart: [0, [Validators.required, greaterThanZeroValidator(true), lessThanOrZeroValidator('percentIn')]]
 		}, {validators: leastOneFieldValidator(['stopTime', 'stopPercent'])});
 	}
 }

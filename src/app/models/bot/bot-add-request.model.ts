@@ -12,5 +12,6 @@ export class BotAddRequestModel {
 	percentOut: number;
 	stopTime: number;
 	stopPercent: number;
+	triggerStart: number;
 	limitQuotes: number;
 }

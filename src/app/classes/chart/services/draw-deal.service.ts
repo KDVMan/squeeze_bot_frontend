@@ -8,8 +8,9 @@ export class DrawDealService {
 	}
 
 	public draw(): void {
-		for (const deal of this.chart.deals) this.drawDeal(deal);
-		// if (this.chart.bot.position) this.drawPosition(this.chart.bot.position);
+		for (const deal of this.chart.deals) {
+			this.drawDeal(deal);
+		}
 	}
 
 	private drawDeal(deal: DealModel): void {

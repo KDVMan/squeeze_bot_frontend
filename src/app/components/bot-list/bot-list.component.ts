@@ -80,14 +80,19 @@ export class BotListComponent implements OnInit, OnDestroy {
 		});
 
 		this.subscriptionBotList = this.websocketService.receive<BotModel[]>(WebsocketEventEnum.botList).subscribe(results => {
+			console.log('Bot list: ', results);
+
 			this.results = results;
 			this.loaded = true;
 		});
 
 		this.subscriptionBot = this.websocketService.receive<BotModel>(WebsocketEventEnum.bot).subscribe(result => {
+			console.log('Bot: ', result);
+
 			const index = this.results.findIndex(x => x.id === result.id);
 
 			if (index !== -1) {
+				console.log('FOUND', this.results[index]);
 				this.results[index] = result;
 			}
 		});
@@ -138,9 +143,9 @@ export class BotListComponent implements OnInit, OnDestroy {
 
 	public onClick(bot: BotModel): void {
 		this.initService.update({
+			botID: bot.id,
 			symbol: bot.symbol,
-			interval: this.initService.model.intervals.find(i => i.name === bot.interval),
-			botID: bot.id
+			interval: this.initService.model.intervals.find(i => i.name === bot.interval)
 		}, [InitSenderEnum.symbol, InitSenderEnum.interval, InitSenderEnum.bot]);
 
 		this.selectedBotID = bot.id;

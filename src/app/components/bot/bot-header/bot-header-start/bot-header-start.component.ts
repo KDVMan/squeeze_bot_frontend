@@ -29,6 +29,7 @@ export class BotHeaderStartComponent {
 			percentOut: Number(this.formGroup.get('percentOut').value),
 			stopTime: Number(this.formGroup.get('stopTime').value),
 			stopPercent: Number(this.formGroup.get('stopPercent').value),
+			triggerStart: Number(this.formGroup.get('triggerStart').value),
 			limitQuotes: 1
 		};
 

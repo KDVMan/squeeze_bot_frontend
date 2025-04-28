@@ -18,6 +18,9 @@ import { ChartSettingsModel } from '@app/models/chart-settings/chart-settings.mo
 import { InitModel } from '@app/models/init/init.model';
 import { DrawDealService } from '@app/classes/chart/services/draw-deal.service';
 import { DealModel } from '@app/models/deal/deal.model';
+import { BotModel } from '@app/models/bot/bot.model';
+import { DrawBotDealService } from '@app/classes/chart/services/draw-bot-deal.service';
+import { BotStatusEnum } from '@app/enums/bot/bot-status.enum';
 
 export class Chart {
 	public context: CanvasRenderingContext2D;
@@ -37,6 +40,7 @@ export class Chart {
 	public rulerService: RulerService;
 	public informationService: InformationService;
 	public drawDealService: DrawDealService;
+	public drawBotDealService: DrawBotDealService;
 	public candleWidth: number = 0;
 	public candleWidthHalf: number = 0;
 	public visibleCandles: number = 0;
@@ -45,6 +49,7 @@ export class Chart {
 	public loadSubject = new Subject<number>();
 	public currentIntervalMilliseconds: number = 0;
 	public deals: DealModel[] = [];
+	public bot: BotModel;
 
 	constructor(public canvas: HTMLCanvasElement) {
 		const container = this.canvas.parentElement;
@@ -103,6 +108,7 @@ export class Chart {
 		this.rulerService = new RulerService(this);
 		this.informationService = new InformationService(this);
 		this.drawDealService = new DrawDealService(this);
+		this.drawBotDealService = new DrawBotDealService(this);
 
 		this.calculate(chartInit.xRescale, chartInit.yRescale);
 	}
@@ -132,16 +138,32 @@ export class Chart {
 
 		this.gridService.draw();
 		this.candleService.draw();
-		this.drawDealService.draw();
+		if (this.deals && this.deals.length > 0) this.drawDealService.draw();
 		this.legendService.draw();
+		if (this.bot && this.bot.status == BotStatusEnum.run && this.bot.deal) this.drawBotDealService.draw();
 		this.currentPriceService.draw();
 		this.aimService.draw();
 		if (this.rulerService.allow) this.rulerService.draw();
 		this.informationService.draw();
 	}
 
-	public updateDeals(deals: DealModel[] = []): void {
+	public updateBot(bot: BotModel): void {
+		this.bot = bot;
+
+		this.update();
+	}
+
+	public updateDeal(deal: DealModel): void {
+		this.deals.push(deal);
+		this.deals.sort((a, b) => a.timeIn - b.timeIn);
+
+		this.update();
+	}
+
+	public updateDeals(bot: BotModel, deals: DealModel[] = []): void {
+		this.bot = bot;
 		this.deals = deals;
+
 		this.update();
 	}
 

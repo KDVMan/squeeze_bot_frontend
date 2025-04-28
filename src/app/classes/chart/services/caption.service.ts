@@ -6,8 +6,8 @@ export class CaptionService {
 	constructor(private chart: Chart) {
 	}
 
-	public drawLineHorizontal(value: number, dashes: number[] | null, thickness: number, color: string): void {
-		const y = this.chart.rangeService.y.coordinateBetweenMinMax(value);
+	public drawLineHorizontal(value: number, dashes: number[] | null, thickness: number, color: string, isCoordinate: boolean = false): void {
+		const y = isCoordinate ? value : this.chart.rangeService.y.coordinateBetweenMinMax(value);
 
 		if (dashes) this.chart.context.setLineDash(dashes);
 
@@ -42,11 +42,13 @@ export class CaptionService {
 		if (dashes) this.chart.context.setLineDash([]);
 	}
 
-	public drawBodyRight(value: number, color: string): void {
+	public drawBodyRight(value: number, color: string, isCoordinate: boolean = false): void {
+		const y = isCoordinate ? value : this.chart.rangeService.y.coordinateBetweenMinMax(value);
+
 		DrawService.rectangle(
 			this.chart.context,
 			this.chart.getWidth(),
-			this.chart.rangeService.y.coordinateBetweenMinMax(value) - this.chart.textService.bottomHeight / 2,
+			y - this.chart.textService.bottomHeight / 2,
 			this.chart.textService.rightWidth,
 			this.chart.textService.bottomHeight,
 			color
@@ -64,7 +66,7 @@ export class CaptionService {
 		);
 	}
 
-	public drawTextRight(value: number, color: string): void {
+	public drawTextRight(value: number, color: string, isCoordinate: boolean = false): void {
 		DrawService.text(
 			this.chart.context,
 			this.chart.textService.formatPrice(value),

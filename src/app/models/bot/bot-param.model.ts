@@ -7,4 +7,5 @@ export class BotParamModel {
 	percentOut: number;
 	stopTime: number;
 	stopPercent: number;
+	triggerStart: number;
 }

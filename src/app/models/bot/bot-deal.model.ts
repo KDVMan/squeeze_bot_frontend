@@ -9,9 +9,9 @@ export class BotDealModel {
 	amountOut: number;
 	isStopTime: boolean;
 	isStopPercent: boolean;
-	calculatePriceIn: number;
-	calculateTimeOut: number;
-	calculatePriceOut: number;
-	calculatePriceStop: number;
 	status: BotDealStatusEnum;
+	preparationPriceIn: number;
+	preparationPriceOut: number;
+	preparationPriceStop: number;
+	preparationTimeOut: number;
 }
