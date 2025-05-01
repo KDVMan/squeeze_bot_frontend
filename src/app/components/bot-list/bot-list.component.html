@@ -41,44 +41,64 @@
 		<td> {{ ('trade-direction.' + result.tradeDirection) | translate | lowercase }}</td>
 		<td>{{ result.window }}</td>
 
-		<td class="param">
-			<span class="prev" *ngIf="result.prevParam.bind">{{ result.prevParam.bind }}</span>
-			<span class="current">{{ result.currentParam.bind }}</span>
-			<span class="next" *ngIf="result.nextParam.bind">{{ result.nextParam.bind }}</span>
+		<td>
+			<div class="param">
+				<span class="prev" *ngIf="result.prevParam.bind">{{ result.prevParam.bind }}</span>
+				<span class="current">{{ result.currentParam.bind }}</span>
+				<span class="next" *ngIf="result.nextParam.bind">{{ result.nextParam.bind }}</span>
+			</div>
 		</td>
 
-		<td class="param">
-			<span class="prev" *ngIf="result.prevParam.percentIn">{{ result.prevParam.percentIn }}</span>
+		<td>
+			<div class="param">
+				<span class="prev" *ngIf="result.prevParam.percentIn">{{ result.prevParam.percentIn }}</span>
 
-			<span class="current">
-				{{ result.currentParam.percentIn }}
-				<i *ngIf="result.deal.priceIn">{{ result.deal.priceIn }}</i>
-			</span>
+				<span class="current">
+					{{ result.currentParam.percentIn }}
+					<i *ngIf="result.deal.priceIn">{{ result.deal.priceIn }}</i>
+				</span>
 
-			<span class="next" *ngIf="result.nextParam.percentIn">{{ result.nextParam.percentIn }}</span>
+				<span class="next" *ngIf="result.nextParam.percentIn">
+					{{ result.nextParam.percentIn }}
+				</span>
+			</div>
 		</td>
 
-		<td class="param">
-			<span class="prev" *ngIf="result.prevParam.percentOut">{{ result.prevParam.percentOut }}</span>
+		<td>
+			<div class="param">
+				<span class="prev" *ngIf="result.prevParam.percentOut">{{ result.prevParam.percentOut }}</span>
 
-			<span class="current">
+				<span class="current">
 				{{ result.currentParam.percentOut }}
-				<i *ngIf="result.deal.preparationPriceOut">{{ result.deal.preparationPriceOut }}</i>
-			</span>
+					<i *ngIf="result.deal.preparationPriceOut">{{ result.deal.preparationPriceOut }}</i>
+				</span>
 
-			<span class="next" *ngIf="result.nextParam.percentOut">{{ result.nextParam.percentOut }}</span>
+				<span class="next" *ngIf="result.nextParam.percentOut">{{ result.nextParam.percentOut }}</span>
+			</div>
 		</td>
 
-		<td class="param">
-			<span class="prev" *ngIf="result.prevParam.stopTime">{{ result.prevParam.stopTime }}</span>
-			<span class="current">{{ result.currentParam.stopTime }}</span>
-			<span class="next" *ngIf="result.nextParam.stopTime">{{ result.nextParam.stopTime }}</span>
+		<td>
+			<div class="param">
+				<span class="prev" *ngIf="result.prevParam.stopTime">
+					{{ result.prevParam.stopTime > 0 ? (result.prevParam.stopTime / 1000 / 60) : '-' }}
+				</span>
+
+				<span class="current">
+					{{ result.currentParam.stopTime > 0 ? (result.currentParam.stopTime / 1000 / 60) : '-' }}
+				</span>
+
+				<span class="next" *ngIf="result.nextParam.stopTime">
+					{{ result.nextParam.stopTime > 0 ? (result.nextParam.stopTime / 1000 / 60) : '-' }}
+				</span>
+			</div>
 		</td>
 
-		<td class="param">
-			<span class="prev" *ngIf="result.prevParam.stopPercent">{{ result.prevParam.stopPercent }}</span>
-			<span class="current">{{ result.currentParam.stopPercent }}</span>
-			<span class="next" *ngIf="result.nextParam.stopPercent">{{ result.nextParam.stopPercent }}</span>
+		<td>
+			<div class="param">
+				<span class="prev" *ngIf="result.prevParam.stopPercent">{{ result.prevParam.stopPercent }}</span>
+				<span class="current">{{ result.currentParam.stopPercent > 0 ? result.currentParam.stopPercent : '-' }}</span>
+				<span class="next" *ngIf="result.nextParam.stopPercent">{{ result.nextParam.stopPercent }}</span>
+			</div>
 		</td>
 
 		<td> {{ result.deposit }}</td>

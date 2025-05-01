@@ -111,6 +111,26 @@ table {
                     fill: var(--red-02);
                 }
             }
+
+            .param {
+                display: flex;
+                gap: 0.3rem;
+                align-items: center;
+
+                .prev {
+                    color: var(--gray-04);
+                    font-size: 0.75rem;
+                }
+
+                .current {
+                    font-weight: bold;
+                }
+
+                .next {
+                    color: var(--blue-01);
+                    font-size: 0.75rem;
+                }
+            }
         }
     }
 }
