@@ -14,4 +14,12 @@ export class BotDealModel {
 	preparationPriceOut: number;
 	preparationPriceStop: number;
 	preparationTimeOut: number;
+	secondsUntilTimeout?: number;
+}
+
+export function calculateSecondsLeft(timestamp: number): number {
+	if (!timestamp) return 0;
+
+	const now = Date.now();
+	return Math.max(0, Math.floor((timestamp - now) / 1000));
 }

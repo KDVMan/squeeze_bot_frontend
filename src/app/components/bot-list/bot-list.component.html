@@ -34,7 +34,7 @@
 
 		<td>
 			{{ result.symbol }}
-			<span *ngIf="!result.isReal">🔵</span>
+			<!--			<span *ngIf="!result.isReal">🔵</span>-->
 		</td>
 
 		<td> {{ ('M002.' + result.interval) | translate }}</td>
@@ -43,16 +43,13 @@
 
 		<td>
 			<div class="param">
-				<span class="prev" *ngIf="result.prevParam.bind">{{ result.prevParam.bind }}</span>
 				<span class="current">{{ result.currentParam.bind }}</span>
-				<span class="next" *ngIf="result.nextParam.bind">{{ result.nextParam.bind }}</span>
+				<span class="next" *ngIf="result.nextParam.mustUpdate">{{ result.nextParam.bind ? result.nextParam.bind : '-' }}</span>
 			</div>
 		</td>
 
 		<td>
 			<div class="param">
-				<span class="prev" *ngIf="result.prevParam.percentIn">{{ result.prevParam.percentIn }}</span>
-
 				<span class="current">
 					{{ result.currentParam.percentIn }}
 					<i *ngIf="result.deal.priceIn">{{ result.deal.priceIn }}</i>
@@ -66,23 +63,17 @@
 
 		<td>
 			<div class="param">
-				<span class="prev" *ngIf="result.prevParam.percentOut">{{ result.prevParam.percentOut }}</span>
-
 				<span class="current">
 				{{ result.currentParam.percentOut }}
 					<i *ngIf="result.deal.preparationPriceOut">{{ result.deal.preparationPriceOut }}</i>
 				</span>
 
-				<span class="next" *ngIf="result.nextParam.percentOut">{{ result.nextParam.percentOut }}</span>
+				<span class="next" *ngIf="result.nextParam.mustUpdate">{{ result.nextParam.percentOut }}</span>
 			</div>
 		</td>
 
 		<td>
 			<div class="param">
-				<span class="prev" *ngIf="result.prevParam.stopTime">
-					{{ result.prevParam.stopTime > 0 ? (result.prevParam.stopTime / 1000 / 60) : '-' }}
-				</span>
-
 				<span class="current">
 					{{ result.currentParam.stopTime > 0 ? (result.currentParam.stopTime / 1000 / 60) : '-' }}
 				</span>
@@ -90,17 +81,21 @@
 				<span class="next" *ngIf="result.nextParam.stopTime">
 					{{ result.nextParam.stopTime > 0 ? (result.nextParam.stopTime / 1000 / 60) : '-' }}
 				</span>
+
+				<div class="left" *ngIf="result.deal?.secondsUntilTimeout">
+					{{ result.deal.secondsUntilTimeout }}
+				</div>
 			</div>
 		</td>
 
 		<td>
 			<div class="param">
-				<span class="prev" *ngIf="result.prevParam.stopPercent">{{ result.prevParam.stopPercent }}</span>
 				<span class="current">{{ result.currentParam.stopPercent > 0 ? result.currentParam.stopPercent : '-' }}</span>
-				<span class="next" *ngIf="result.nextParam.stopPercent">{{ result.nextParam.stopPercent }}</span>
+				<span class="next" *ngIf="result.nextParam.mustUpdate">{{ result.nextParam.stopPercent }}</span>
 			</div>
 		</td>
 
+		<td>{{ result.timeUpdate ? result.secondsSinceTimeUpdate : '-' }}</td>
 		<td> {{ result.deposit }}</td>
 
 		<td [ngSwitch]="result.status === botStatusEnum.run && result.deal.status === botDealStatusEnum.open">

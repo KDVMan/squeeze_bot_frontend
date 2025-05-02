@@ -1,9 +1,9 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbNavModule, NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, first, Observable, Subscription } from 'rxjs';
 import { PaginationService } from '@core/services/pagination.service';
-import { BotModel } from '@app/models/bot/bot.model';
+import { BotModel, calculateSecondsSinceUpdate } from '@app/models/bot/bot.model';
 import { WebsocketService } from '@core/services/websocket.service';
 import { WebsocketEventEnum } from '@core/enums/websocket-event.enum';
 import { BotSortEnum } from '@app/enums/bot/bot-sort.enum';
@@ -19,6 +19,7 @@ import { BotStatusEnum } from '@app/enums/bot/bot-status.enum';
 import { BotService } from '@app/services/bot/bot.service';
 import { BotDealStatusEnum } from '@app/enums/bot/bot-deal-status.enum';
 import { BotUpdateStatusRequestModel } from '@app/models/bot/bot-update-status-request.model';
+import { calculateSecondsLeft } from '@app/models/bot/bot-deal.model';
 
 @Component({
 	selector: 'app-bot-list',
@@ -44,6 +45,8 @@ export class BotListComponent implements OnInit, OnDestroy {
 	public toggle$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	public readonly botStatusEnum = BotStatusEnum;
 	public readonly botDealStatusEnum = BotDealStatusEnum;
+	private readonly cdr = inject(ChangeDetectorRef);
+	private intervalId: any;
 
 	public sortFields = [
 		{name: '#', value: BotSortEnum.id, sortable: true},
@@ -56,6 +59,7 @@ export class BotListComponent implements OnInit, OnDestroy {
 		{name: 'Выход', value: BotSortEnum.percentOut, sortable: true},
 		{name: 'Стоп время', value: BotSortEnum.stopTime, sortable: true},
 		{name: 'Стоп процент', value: BotSortEnum.stopPercent, sortable: true},
+		{name: 'Обновление', value: BotSortEnum.timeUpdate, sortable: false},
 		{name: 'Депозит', value: BotSortEnum.deposit, sortable: true},
 		{name: 'Статус', value: BotSortEnum.status, sortable: true},
 	];
@@ -66,6 +70,8 @@ export class BotListComponent implements OnInit, OnDestroy {
 		this.sortColumn = this.initService.model.botSortColumn;
 		this.sortDirection = this.initService.model.botSortDirection;
 		this.selectedBotID = this.initService.model.botID ?? null;
+
+		this.startTimer();
 
 		this.subscriptionInit = this.initService.setSubject.subscribe((response: InitSubjectModel) => {
 			if (response.senders.some(x => x === InitSenderEnum.symbol)) {
@@ -80,28 +86,38 @@ export class BotListComponent implements OnInit, OnDestroy {
 		});
 
 		this.subscriptionBotList = this.websocketService.receive<BotModel[]>(WebsocketEventEnum.botList).subscribe(results => {
-			console.log('Bot list: ', results);
-
 			this.results = results;
 			this.loaded = true;
 		});
 
 		this.subscriptionBot = this.websocketService.receive<BotModel>(WebsocketEventEnum.bot).subscribe(result => {
-			console.log('Bot: ', result);
-
 			const index = this.results.findIndex(x => x.id === result.id);
 
 			if (index !== -1) {
-				console.log('FOUND', this.results[index]);
 				this.results[index] = result;
 			}
 		});
 	}
 
 	public ngOnDestroy(): void {
+		if (this.intervalId) clearInterval(this.intervalId);
 		if (this.subscriptionInit) this.subscriptionInit.unsubscribe();
 		if (this.subscriptionBotList) this.subscriptionBotList.unsubscribe();
 		if (this.subscriptionBot) this.subscriptionBot.unsubscribe();
+	}
+
+	private startTimer(): void {
+		this.intervalId = setInterval(() => {
+			this.results.forEach(bot => {
+				bot.secondsSinceTimeUpdate = calculateSecondsSinceUpdate(bot.timeUpdate);
+
+				if (bot.deal?.preparationTimeOut) {
+					bot.deal.secondsUntilTimeout = calculateSecondsLeft(bot.deal.preparationTimeOut);
+				}
+			});
+
+			this.cdr.detectChanges();
+		}, 1000);
 	}
 
 	public onPage(page: number) {

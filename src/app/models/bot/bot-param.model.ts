@@ -8,4 +8,5 @@ export class BotParamModel {
 	stopTime: number;
 	stopPercent: number;
 	triggerStart: number;
+	mustUpdate: boolean;
 }

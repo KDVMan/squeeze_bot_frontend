@@ -18,4 +18,10 @@ export class BotModel {
 	nextParam: BotParamModel;
 	status: BotStatusEnum;
 	deal: BotDealModel;
+	timeUpdate: number;
+	secondsSinceTimeUpdate: number = 0;
+}
+
+export function calculateSecondsSinceUpdate(timeUpdate: number): number {
+	return timeUpdate ? Math.floor((Date.now() - timeUpdate) / 1000) : 0;
 }
