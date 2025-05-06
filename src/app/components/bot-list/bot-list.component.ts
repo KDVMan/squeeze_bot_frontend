@@ -20,18 +20,25 @@ import { BotService } from '@app/services/bot/bot.service';
 import { BotDealStatusEnum } from '@app/enums/bot/bot-deal-status.enum';
 import { BotUpdateStatusRequestModel } from '@app/models/bot/bot-update-status-request.model';
 import { calculateSecondsLeft } from '@app/models/bot/bot-deal.model';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { KeyValueModel } from '@core/models/key-value.model';
+import { BotActionEnum } from '@app/enums/bot/bot-action.enum';
+import { HelperService } from '@core/services/helper.service';
+import { FormSelectComponent } from '@core/components/form-select/form-select.component';
+import { BotActionRequestModel } from '@app/models/bot/bot-action-request.model';
 
 @Component({
 	selector: 'app-bot-list',
 	templateUrl: './bot-list.component.html',
 	styleUrl: './bot-list.component.scss',
-	imports: [CommonModule, NgbNavModule, SortIconPipe, LoadingSpinnerComponent, SvgIconComponent, TranslatePipe, NgbTooltip]
+	imports: [CommonModule, NgbNavModule, SortIconPipe, LoadingSpinnerComponent, SvgIconComponent, TranslatePipe, NgbTooltip, FormSelectComponent, ReactiveFormsModule]
 })
 export class BotListComponent implements OnInit, OnDestroy {
 	private readonly initService = inject(InitService);
 	private readonly paginationService = inject(PaginationService);
 	private readonly websocketService = inject(WebsocketService);
 	private readonly botService = inject(BotService);
+	private readonly formBuilder = inject(FormBuilder);
 	private subscriptionInit: Subscription;
 	private subscriptionBotList: Subscription;
 	private subscriptionBot: Subscription;
@@ -47,6 +54,8 @@ export class BotListComponent implements OnInit, OnDestroy {
 	public readonly botDealStatusEnum = BotDealStatusEnum;
 	private readonly cdr = inject(ChangeDetectorRef);
 	private intervalId: any;
+	public actionFormGroup: FormGroup;
+	public actions: KeyValueModel[];
 
 	public sortFields = [
 		{name: '#', value: BotSortEnum.id, sortable: true},
@@ -65,11 +74,16 @@ export class BotListComponent implements OnInit, OnDestroy {
 	];
 
 	public ngOnInit(): void {
+		this.actions = HelperService.convertEnumToKeyValue(BotActionEnum, 'bot-action');
 		this.total$ = this.paginationService.totalSubject;
 		this.page$ = this.paginationService.pageSubject;
 		this.sortColumn = this.initService.model.botSortColumn;
 		this.sortDirection = this.initService.model.botSortDirection;
 		this.selectedBotID = this.initService.model.botID ?? null;
+
+		this.actionFormGroup = this.formBuilder.group({
+			action: ['', Validators.required]
+		});
 
 		this.startTimer();
 
@@ -165,5 +179,17 @@ export class BotListComponent implements OnInit, OnDestroy {
 		}, [InitSenderEnum.symbol, InitSenderEnum.interval, InitSenderEnum.bot]);
 
 		this.selectedBotID = bot.id;
+	}
+
+	public onAction(): void {
+		const request: BotActionRequestModel = {
+			action: this.actionFormGroup.get('action').value
+		};
+
+		this.botService.action(request)
+			.pipe(first())
+			.subscribe();
+
+		this.actionFormGroup.get('action').setValue('');
 	}
 }

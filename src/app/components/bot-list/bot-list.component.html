@@ -1,134 +1,132 @@
 <app-loading-spinner *ngIf="loaded === false"></app-loading-spinner>
 
-<table>
-	<tr>
-		<th *ngFor="let sortField of sortFields">
-			<div *ngIf="sortField.sortable" (click)="onSort(sortField.value)">
+<div class="bot-list">
+	<div class="actions">
+		<form [formGroup]="actionFormGroup">
+			<app-form-select [name]="'action'"
+							 [width]="10"
+							 [items]="actions"
+							 [item]="actionFormGroup.get('action').value ? { key: actionFormGroup.get('action').value, value: actionFormGroup.get('action').value } : { key: '', value: '' }"
+							 [addEmpty]="false"
+							 [allowChanged]="true"/>
+
+			<button class="btn btn-action" (click)="onAction()" [disabled]="actionFormGroup.invalid">Выполнить</button>
+		</form>
+	</div>
+
+	<table>
+		<tr>
+			<th *ngFor="let sortField of sortFields">
+				<div *ngIf="sortField.sortable" (click)="onSort(sortField.value)">
                 <span>
                     {{ sortField.name }}
                 </span>
 
-				<ng-container *ngIf="sortField.value | sortIcon:sortColumn:sortDirection as sort">
-					<svg-icon [name]="sort.name" svgClass="icon sort" [svgStyle]="{'fill': sort.color, 'width.rem': sort.size}"></svg-icon>
-				</ng-container>
-			</div>
+					<ng-container *ngIf="sortField.value | sortIcon:sortColumn:sortDirection as sort">
+						<svg-icon [name]="sort.name" svgClass="icon sort" [svgStyle]="{'fill': sort.color, 'width.rem': sort.size}"></svg-icon>
+					</ng-container>
+				</div>
 
-			<div *ngIf="!sortField.sortable">
+				<div *ngIf="!sortField.sortable">
                  <span>
                     {{ sortField.name }}
                 </span>
-			</div>
-		</th>
+				</div>
+			</th>
 
-		<th>
-			<svg-icon [name]="toggle$.value ? 'toggle-on' : 'toggle-off'"
-					  [ngbTooltip]="toggle$.value ? 'Показать всех ботов' : 'Показать ботов только для этого символа'"
-					  [openDelay]="1000"
-					  container="body"
-					  (click)="onToggle()"></svg-icon>
-		</th>
-	</tr>
+			<th>
+				<svg-icon [name]="toggle$.value ? 'toggle-on' : 'toggle-off'"
+						  [ngbTooltip]="toggle$.value ? 'Показать всех ботов' : 'Показать ботов только для этого символа'"
+						  [openDelay]="1000"
+						  container="body"
+						  (click)="onToggle()"></svg-icon>
+			</th>
+		</tr>
 
-	<tr *ngFor="let result of results" (click)="onClick(result)" [class.selected]="result.id === selectedBotID">
-		<td>{{ result.id }}</td>
+		<tr *ngFor="let result of results" (click)="onClick(result)" [class.selected]="result.id === selectedBotID">
+			<td>{{ result.id }}</td>
 
-		<td>
-			{{ result.symbol }}
-			<!--			<span *ngIf="!result.isReal">🔵</span>-->
-		</td>
+			<td>
+				{{ result.symbol }}
+				<!--			<span *ngIf="!result.isReal">🔵</span>-->
+			</td>
 
-		<td> {{ ('M002.' + result.interval) | translate }}</td>
-		<td> {{ ('trade-direction.' + result.tradeDirection) | translate | lowercase }}</td>
-		<td>{{ result.window }}</td>
+			<td> {{ ('M002.' + result.interval) | translate }}</td>
+			<td> {{ ('trade-direction.' + result.tradeDirection) | translate | lowercase }}</td>
+			<td>{{ result.window }}</td>
 
-		<td>
-			<div class="param">
-				<span class="current">{{ result.currentParam.bind }}</span>
-				<span class="next" *ngIf="result.nextParam.mustUpdate">{{ result.nextParam.bind ? result.nextParam.bind : '-' }}</span>
-			</div>
-		</td>
+			<td>
+				<div class="param">
+					<span class="current">{{ result.currentParam.bind }}</span>
+					<span class="next" *ngIf="result.nextParam.mustUpdate">{{ result.nextParam.bind ? result.nextParam.bind : '-' }}</span>
+				</div>
+			</td>
 
-		<td>
-			<div class="param">
+			<td>
+				<div class="param">
 				<span class="current">
 					{{ result.currentParam.percentIn }}
 					<i *ngIf="result.deal.priceIn">{{ result.deal.priceIn }}</i>
 				</span>
 
-				<span class="next" *ngIf="result.nextParam.percentIn">
+					<span class="next" *ngIf="result.nextParam.percentIn">
 					{{ result.nextParam.percentIn }}
 				</span>
-			</div>
-		</td>
+				</div>
+			</td>
 
-		<td>
-			<div class="param">
+			<td>
+				<div class="param">
 				<span class="current">
 				{{ result.currentParam.percentOut }}
 					<i *ngIf="result.deal.preparationPriceOut">{{ result.deal.preparationPriceOut }}</i>
 				</span>
 
-				<span class="next" *ngIf="result.nextParam.mustUpdate">{{ result.nextParam.percentOut }}</span>
-			</div>
-		</td>
+					<span class="next" *ngIf="result.nextParam.mustUpdate">{{ result.nextParam.percentOut }}</span>
+				</div>
+			</td>
 
-		<td>
-			<div class="param">
+			<td>
+				<div class="param">
 				<span class="current">
 					{{ result.currentParam.stopTime > 0 ? (result.currentParam.stopTime / 1000 / 60) : '-' }}
 				</span>
 
-				<span class="next" *ngIf="result.nextParam.stopTime">
+					<span class="next" *ngIf="result.nextParam.stopTime">
 					{{ result.nextParam.stopTime > 0 ? (result.nextParam.stopTime / 1000 / 60) : '-' }}
 				</span>
 
-				<div class="left" *ngIf="result.deal?.secondsUntilTimeout">
-					{{ result.deal.secondsUntilTimeout }}
+					<div class="left" *ngIf="result.deal?.secondsUntilTimeout">
+						{{ result.deal.secondsUntilTimeout }}
+					</div>
 				</div>
-			</div>
-		</td>
+			</td>
 
-		<td>
-			<div class="param">
-				<span class="current">{{ result.currentParam.stopPercent > 0 ? result.currentParam.stopPercent : '-' }}</span>
-				<span class="next" *ngIf="result.nextParam.mustUpdate">{{ result.nextParam.stopPercent }}</span>
-			</div>
-		</td>
+			<td>
+				<div class="param">
+					<span class="current">{{ result.currentParam.stopPercent > 0 ? result.currentParam.stopPercent : '-' }}</span>
+					<span class="next" *ngIf="result.nextParam.mustUpdate">{{ result.nextParam.stopPercent }}</span>
+				</div>
+			</td>
 
-		<td>{{ result.timeUpdate ? result.secondsSinceTimeUpdate : '-' }}</td>
-		<td> {{ result.deposit }}</td>
+			<td>{{ result.timeUpdate ? result.secondsSinceTimeUpdate : '-' }}</td>
+			<td> {{ result.deposit }}</td>
 
-		<td [ngSwitch]="result.status === botStatusEnum.run && result.deal.status === botDealStatusEnum.open">
+			<td [ngSwitch]="result.status === botStatusEnum.run && result.deal.status === botDealStatusEnum.open">
 			<span *ngSwitchCase="true">
 				{{ ('M006.deal') | translate | lowercase }}
 			</span>
 
-			<span *ngSwitchDefault>
+				<span *ngSwitchDefault>
 				{{ ('M006.' + result.status) | translate | lowercase }}
 			</span>
-		</td>
+			</td>
 
-		<td class="actions">
-			<svg-icon [name]="'start'" *ngIf="result.status === botStatusEnum.stop" (click)="onStatus(result.id, $event, botStatusEnum.add)"/>
-			<svg-icon [name]="'stop'" *ngIf="result.status === botStatusEnum.add || result.status === botStatusEnum.run" (click)="onStatus(result.id, $event, botStatusEnum.stop)"/>
-			<svg-icon [name]="'delete'" *ngIf="result.status == botStatusEnum.stop" (click)="onStatus(result.id, $event, botStatusEnum.delete)"/>
-		</td>
-	</tr>
-</table>
-
-
-<!--	<div class="right">-->
-<!--        <div class="pages" *ngIf="active === 'archive'">-->
-<!--    			<span class="total">-->
-<!--    				{{ total$ | async }}-->
-<!--    			</span>-->
-
-<!--            <ngb-pagination [collectionSize]="total$ | async"-->
-<!--                            [pageSize]="configService.get('pagination.onPage')"-->
-<!--                            [maxSize]="configService.get('pagination.onNav')"-->
-<!--                            [page]="page$ | async"-->
-<!--                            (pageChange)="onPage($event)"-->
-<!--                            [directionLinks]="false"-->
-<!--                            [rotate]="true">-->
-<!--            </ngb-pagination>-->
-<!--        </div>-->
+			<td class="actions">
+				<svg-icon [name]="'start'" *ngIf="result.status === botStatusEnum.stop" (click)="onStatus(result.id, $event, botStatusEnum.add)"/>
+				<svg-icon [name]="'stop'" *ngIf="result.status === botStatusEnum.add || result.status === botStatusEnum.run" (click)="onStatus(result.id, $event, botStatusEnum.stop)"/>
+				<svg-icon [name]="'delete'" *ngIf="result.status == botStatusEnum.stop" (click)="onStatus(result.id, $event, botStatusEnum.delete)"/>
+			</td>
+		</tr>
+	</table>
+</div>
