@@ -2,4 +2,4 @@
 
 Установка описана на странице: https://github.com/KDVMan/squeeze_calculator_frontend
 
-Бекенд (сам бот): 
+Бекенд (сам бот): https://github.com/KDVMan/squeeze_bot_backend
